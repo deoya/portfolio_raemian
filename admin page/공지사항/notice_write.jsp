@@ -12,6 +12,10 @@
 <!-- 신규추가된 css 파일 -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/notice.css?v=">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/guide.css?v=<%=today%>">
+<style>
+	#fileul img { width: 60px;}
+</style>
+
 <!-- 신규추가된 css 파일 끝-->
  <script src="${pageContext.request.contextPath}/resources/ckeditor/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
@@ -27,12 +31,11 @@
 			<li> FTP 서버에서 파일 저장 (exe|sh|zip|alz은 불가능하게 js에서 처리)</li>
 			<li> 파일 저장시 년도 / 월 / 일 순으로 폴더를 자동생성 후 파일 명 앞에 중복 방지를 위한 랜덤문자를 생성 (UUID활용)</li>
 			<li> ckeditor 탑재</li>
+			<li> (24.04.27) 섬네일(Thumbnailator) 출력 가능. 다수의 파일 저장 가능 (총 3개까지)</li>
 		</ul>
 	</div>
 	<div>#구현 예정 기술
 		<ul>
-			<li>첨부파일에서 이미지는 섬네일(Thumbnailator 활용예정)로 작게 출력되어 보여지며, 그 외 파일은 별도의 아이콘으로 출력</li>
-			<li>다수의 파일 저장 가능하게 하기(최대 5개로 제한 예정)</li>
 		</ul>
 	</div>
 </div>
@@ -57,7 +60,12 @@
 		       <textarea id="incontent" name="ncontent" class="notice_in in3"></textarea>
 		       </li>       
 		       <li>첨부파일</li>
-		       <li><input type="file" name="file"  @change="fileck($event)"></li>   
+		       <li>
+		       		<input type="file" name="ajaxfile"  @change="fileajax($event)" multiple>
+		       		<ul id="fileul" style="display: flex; flex-flow: row; margin-top:13px;">
+		       		</ul>
+		       		
+		       	</li>   
 		       </ol>
 		       <span class="notice_btns">
 		       <input type="button" value="글등록" class="meno_btn2" @click="insert"></span>
