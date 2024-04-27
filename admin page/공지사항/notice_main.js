@@ -29,9 +29,10 @@ var html = new Vue({
 					html.delete1(nidx)
 				}
 		},
-		delete2 : function(nidx, nfile, pt){
+		delete2 : function(nidx,nfile,filetype, pt){
 			if(confirm("해당 데이터를 삭제하시겠습니까?")){
-					fetch(path+"/raemian_admin/notice/delete?nidx="+nidx+"&nfile="+nfile+"&path="+pt).then(function(data){
+					
+					fetch(path+"/raemian_admin/notice/delete?nidx="+nidx+"&nfile="+nfile+"&filetype="+filetype+"&path="+pt).then(function(data){
 						return data.text();
 					}).then(function(data){
 						alert(data)
@@ -41,17 +42,19 @@ var html = new Vue({
 					})
 				}
 		},
-		del_file :function(event, nidx, nfile, pt, aidx, login_aidx,auth){
+		del_file :function(event, nidx,filetype, uuid, nfile, pt, aidx, login_aidx,auth){
 				event.stopPropagation();
+				console.log(nfile, filetype)
+				
 				if(auth == "ROLE_ADMIN"){
 					if(aidx == login_aidx){
-						html.delete1(nidx)
+						html.delete2(nidx,uuid+nfile,filetype, pt)
 					}else {
 						alert("슈퍼 계정 혹은 글 작성자만 삭제가 가능합니다")
 					}
 				}
 				else if(auth == "ROLE_S_ADMIN"){
-					html.delete2(nidx, nfile, pt)
+					html.delete2(nidx,uuid+nfile,filetype, pt)
 				}
 				
 				
