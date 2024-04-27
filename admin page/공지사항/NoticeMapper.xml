@@ -3,31 +3,59 @@
 <mapper namespace="folio.port.mapper.NoticeMapper">
 <!-- [데이터 출력] -->
 <select id="getList" resultType="folio.port.domain.noticeDAO">
-	select * from r_admin_notice
+	select * from v_r_admin_notices
 </select>
 <select id="select_page" resultType="folio.port.domain.noticeDAO">
-	select * from r_admin_notice order by nidx desc limit #{pg},10	
+	select * from v_r_admin_notices order by nidx desc limit #{pg},10	
 </select>
 <select id="select_search" resultType="folio.port.domain.noticeDAO">
-	select * from r_admin_notice where ncontent like concat('%',#{search}, '%') order by nidx desc
+	select * from v_r_admin_notices where ncontent like concat('%',#{search}, '%') order by nidx desc
 </select>
 <select id="select_search_pg" parameterType="java.util.Map"  resultType="folio.port.domain.noticeDAO">
-	select * from r_admin_notice where ncontent like concat('%',#{search}, '%') order by nidx desc limit #{page},10	
+	select * from v_r_admin_notices where ncontent like concat('%',#{search}, '%') order by nidx desc limit #{page},10	
 </select>
 
 <!-- [글 등록] -->
+
 <insert id="insert">
-	insert into r_admin_notice (nidx,ntitle,aidx,aname,ncontent,nfile,uploadPath,nfile_name,ncnt,ndate,nupdate)
-	values('0',#{ntitle},#{aidx},#{aname},#{ncontent},#{nfile},#{uploadPath},#{nfile_name},#{ncnt},now(),now())
+	insert into r_admin_notice (nidx,ntitle,aidx,aname,ncontent,ncnt,ndate,nupdate)
+	values('0',#{ntitle},#{aidx},#{aname},#{ncontent},#{ncnt},now(),now())
+	
+	<selectKey keyProperty="nidx" resultType="int" order="AFTER">
+		select LAST_INSERT_ID()
+	</selectKey>
 </insert>
+
+<insert id="filedata">
+ 	insert into r_admin_attach(nidx,nfile,uuid,uploadPath,filetype)
+ 	values(#{nidx},#{nfile},#{uuid},#{uploadPath},#{filetype})
+</insert>
+
+
 <!-- [글 삭제] -->
 <delete id="delete">
 	delete from r_admin_notice where nidx = #{a}
 </delete>
 <!-- [단일 데이터 출력] -->
 <select id="get" resultType="folio.port.domain.noticeDAO">
-	select * from r_admin_notice where nidx= #{a}
+	select * from v_r_admin_notices where nidx= #{a}
 </select>
+
+
+
+
+
+
+<!-- [파일 데이터 삭제] -->
+<delete id="delete_file">
+	delete from r_admin_attach where nidx = #{a}
+</delete>
+
+<!-- [파일 리스트 호출] -->
+<select id="filesget" resultType="folio.port.domain.AttachDAO">
+	select * from r_admin_attach where nidx= #{a}
+</select>
+
 
 
 </mapper>
