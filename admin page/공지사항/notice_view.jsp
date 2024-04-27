@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
  <% Date today = new Date(); %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,8 +50,17 @@
        <li style="height:520px; padding-top: 10px;">
        <div class="text_in2">${data.getNcontent()}</div>
        </li>       
-       <li>첨부파일</li>
-       <li class="text_in"><a target="_blank" href="http://deoya.cdn1.cafe24.com/${data.getUploadPath()}${data.getNfile()}">${data.getNfile_name()}</a></li>   
+       <li style="width:100%;">
+       		<ul style="width:inherit">
+       		<li style="width:15%; float: left;">첨부파일</li>
+       	<c:forEach items="${files}" var="file">
+       		<li  class="text_in"  style="width:15%; float: left;">
+       		 <a target="_blank" href="http://deoya.cdn1.cafe24.com/${file.uploadPath}${file.uuid}${file.nfile}">${file.nfile}</a>
+       		
+       		</li>
+       	</c:forEach>
+       	</ul>
+       </li>
        </ol>
        <span class="notice_btns">
        <input type="button" value="목록" class="meno_btn2" onclick="location.href='${pageContext.request.contextPath}/raemian_admin/notice/notice_main'"></span>
