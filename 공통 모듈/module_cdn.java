@@ -49,16 +49,25 @@ public class module_cdn<D extends UploadPathSettable> {
         }
     }
 
+     // 파일이 이미지인지 확인
+    public static boolean isImage(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType != null && contentType.startsWith("image/");
+    }
+    
+
     // FTP 파일 업로드(단일)
     public boolean cdn(String filename, MultipartFile file, D dao) {
+    	
         FTPClient ftp = new FTPClient();
         boolean result = false;
         try {
-            ftp.setControlEncoding("utf-8");
+            ftp.setControlEncoding("euc-kr"); //"utf-8");
             ftp.connect(host, port);
             ftp.login(user, pass);
             ftp.setFileType(FTP.BINARY_FILE_TYPE);
             ftp.changeWorkingDirectory("/");
+           
             
             String folderPath = getFolder();
             String remoteDirPath =  "/www/" + folderPath; 
@@ -67,12 +76,40 @@ public class module_cdn<D extends UploadPathSettable> {
 
             dao.setUploadPath(folderPath);
             
+            
             File tempFile = File.createTempFile("temp", ".tmp");
             file.transferTo(tempFile);
             FileInputStream inputStream = new FileInputStream(tempFile);
+            
+            
+            
+            // 이미지 타입인지 확인 후 섬네일 별도 저장
+        	if(isImage(file)) {
+        		dao.setFiletype("I");
+        		 String thumbnailFilename = "s_" + filename;
+        		 
+        		 try {
+        			 File thumbnailFile = new File(thumbnailFilename);
+        			 
+        			 
+        			 Thumbnails.of(file.getInputStream())
+                     .size(100, 100)
+                     .toFile(thumbnailFile);
+        			 
+        			 try (InputStream input = new FileInputStream(thumbnailFile)) {
+        	                ftp.storeFile(remoteDirPath + thumbnailFilename, input);
+        	            }
+        		 }catch (Exception e) {
+        			 // 섬네일 저장 실패 했을때 
+        			 log.info(e);
+        		 }
+        	}else dao.setFiletype("E");
+            
             result = ftp.storeFile(remoteDirPath + filename, inputStream);
+            
             inputStream.close();
             tempFile.delete();
+            
             
         } catch (Exception e) {
             log.info("FTP 파일 업로드 오류: " + e.getMessage());
@@ -88,8 +125,12 @@ public class module_cdn<D extends UploadPathSettable> {
         }
         return result;
     }
+    
+    
+    
+    
     //파일 삭제(단일)
-    public boolean cdn_delete(String uploadPath, String filename) {
+    public boolean cdn_delete(String uploadPath, String filename, String filetype) {
     	FTPClient ftp = new FTPClient();
         boolean result = false;
         try {
@@ -97,9 +138,14 @@ public class module_cdn<D extends UploadPathSettable> {
             ftp.connect(host, port);
             ftp.login(user, pass);
             ftp.changeWorkingDirectory("/");
-    
+            
+            
             result = ftp.deleteFile("/www/"+uploadPath+filename);
            
+            if(filetype.equals("I")) {
+            	ftp.deleteFile("/www/"+uploadPath+"s_"+filename);
+            }
+            
 			
 		}catch (Exception e) {
             log.info("FTP 파일 삭제 오류: " + e.getMessage());
@@ -115,6 +161,7 @@ public class module_cdn<D extends UploadPathSettable> {
         }
         return result;
 	}
+    
     
 }
 
