@@ -73,16 +73,19 @@
 		        <li>${fn:length(All_list) - (view_no - 1) * 10 - no.index}</li>
 		        <li style="text-align: left; justify-content: flex-start;">${li.ntitle}</li>
 		        <li>
-		        	<c:if test='${li.nfile != "" }'>O</c:if> 
-		        	<c:if test='${li.nfile == "" }'>X</c:if> 
+		        	<c:if test='${li.nfile != null }'>O</c:if> 
+		        	<c:if test='${li.nfile == null }'>X</c:if> 
 		        </li>
 		        <li>${li.ncnt}</li>
 		        <li>${li.aname}</li>
+		         
 		        <li><fmt:formatDate value="${li.nupdate}" pattern="yyyy-MM-dd" /></li>
+		        
 		        <li>
-		        	<c:if test='${li.nfile != "" }'> <input type="button" value="삭제" class="delbtn" @click="del_file($event,'${li.nidx}','${li.nfile}','${li.uploadPath}','${li.aidx}','<sec:authentication property="principal.adminDao.aidx"/>','<sec:authentication property="principal.adminDao.auth"/>')"></c:if> 
-		        	<c:if test='${li.nfile == "" }'> <input type="button" value="삭제" class="delbtn"  @click="del($event,'${li.nidx}','${li.aidx}','<sec:authentication property="principal.adminDao.aidx"/>','<sec:authentication property="principal.adminDao.auth"/>')"></c:if> 
+		        	<c:if test='${li.nfile != null }'> <input type="button" value="삭제" class="delbtn" @click="del_file($event,'${li.nidx}','${li.filetype}','${li.uuid}','${li.nfile}','${li.uploadPath}','${li.aidx}','<sec:authentication property="principal.adminDao.aidx"/>','<sec:authentication property="principal.adminDao.auth"/>')"></c:if> 
+		        	<c:if test='${li.nfile == null }'> <input type="button" value="삭제" class="delbtn"  @click="del($event,'${li.nidx}','${li.aidx}','<sec:authentication property="principal.adminDao.aidx"/>','<sec:authentication property="principal.adminDao.auth"/>')"></c:if> 
 		        </li>
+		        
 	       </ul>
 	       </c:forEach>
        </c:if>
