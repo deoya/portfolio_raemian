@@ -8,13 +8,21 @@ import lombok.Data;
 public class noticeDAO implements UploadPathSettable{
 	private int nidx,aidx,ncnt;
 	
-	private String ntitle,aname,ncontent,nfile,uploadPath,nfile_name;
+	private String ntitle,aname,ncontent;
 	
 	private Date ndate, nupdate;
+	
+	//---
+	private String nfile, uuid,uploadPath,filetype; 
 	
 	@Override
     public void setUploadPath(String uploadPath) {
         this.uploadPath = uploadPath;
     }
+	
+	@Override
+	public void setFiletype(String filetype) {
+		this.filetype = filetype;
+	}
 	
 }
