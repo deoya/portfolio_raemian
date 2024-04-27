@@ -60,7 +60,8 @@ public class InfoService {
 		this.cdn = new module_cdn<>();
 		// 구 이미지 파일 삭제 
 		if(category != "new") {
-			boolean del = cdn.cdn_delete(dao.getUploadPath(), dao.getFimg());
+				// 임시
+			boolean del = cdn.cdn_delete(dao.getUploadPath(), dao.getFimg(), "E");
 			if(del == false) {
 				return module1.back("등록에 실패하였습니다 [번호 : 008]");
 			}
@@ -87,7 +88,8 @@ public class InfoService {
 				}
 
 			}else {
-				boolean dresult = cdn.cdn_delete(dao.getUploadPath(), dao.getFimg());
+				//임시
+				boolean dresult = cdn.cdn_delete(dao.getUploadPath(), dao.getFimg(),"E");
 				if(category == "new") {
 					return module1.back("등록에 실패하였습니다 [번호 : 004]");
 				} else {
@@ -116,7 +118,8 @@ public class InfoService {
 		this.cdn = new module_cdn<>();
 		
 		if(mapper.delete(fidx) > 0) {
-			if(cdn.cdn_delete(path, fname)) {
+			//임시
+			if(cdn.cdn_delete(path, fname,"E")) {
 				return "삭제에 성공하였습니다";
 			}else {
 				return "삭제에 실패 했습니다 [번호 : 010]";
